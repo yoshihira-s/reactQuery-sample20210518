@@ -1,22 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import Planet from "./Planet";
 
-const fetchPlanets = async () => {
-  const res = await fetch("https://swapi.dev/api/planets/");
+const fetchPlanets = async page => {
+  const res = await fetch(`http://swapi.dev/api/planets/?page=${page}`);
   return res.json();
 };
 
 const Planets = () => {
-  const { data, status } = useQuery("planets", fetchPlanets, {
-    staleTime: 0,
-    // cacheTime: 10,
-    onSuccess: () => console.log("data fetched")
-  });
-  console.log(data);
+  const [page, setPage] = useState(1);
+  const { data, status } = useQuery(
+    ["planets", "hello", page],
+    () => fetchPlanets(page),
+    {
+      keepPreviousData: true
+    }
+  );
   return (
     <div>
       <h2>Planets</h2>
+
+      <button
+        onClick={() => setPage(old => Math.max(old - 1, 1))}
+        disabled={page === 1}
+      >
+        Previous page
+      </button>
+      <span>{page}</span>
+      <button
+        onClick={() => setPage(page + 1)}
+        disabled={page >= data.count / data.results.length}
+      >
+        Next page
+      </button>
       {/* <p>{status}</p> */}
       {status === "loading" && <div>ロード中</div>}
       {status === "error" && <div>取得できませんでした</div>}
