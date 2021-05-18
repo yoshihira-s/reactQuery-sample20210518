@@ -16,32 +16,34 @@ const Planets = () => {
       keepPreviousData: true
     }
   );
+
   return (
     <div>
       <h2>Planets</h2>
-
-      <button
-        onClick={() => setPage(old => Math.max(old - 1, 1))}
-        disabled={page === 1}
-      >
-        Previous page
-      </button>
-      <span>{page}</span>
-      <button
-        onClick={() => setPage(page + 1)}
-        disabled={page >= data.count / data.results.length}
-      >
-        Next page
-      </button>
-      {/* <p>{status}</p> */}
+      <p>{status}</p>
       {status === "loading" && <div>ロード中</div>}
       {status === "error" && <div>取得できませんでした</div>}
       {status === "success" && (
-        <div>
-          {data.results.map(planet => (
-            <Planet key={planet.name} planet={planet} />
-          ))}
-        </div>
+        <>
+          <button
+            onClick={() => setPage(old => Math.max(old - 1, 1))}
+            disabled={page === 1}
+          >
+            Previous page
+          </button>
+          <span>{page}</span>
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page >= data.count / data.results.length}
+          >
+            Next page
+          </button>
+          <div>
+            {data.results.map(planet => (
+              <Planet key={planet.name} planet={planet} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
